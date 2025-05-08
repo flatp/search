@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CSVからグラフ描画</title>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: row;
+      font-family: sans-serif;
+    }
+    #left {
+      width: 80%;
+      padding-right: 10px;
+    }
+    #right {
+      width: 20%;
+      border-left: 1px solid #ccc;
+      padding-left: 10px;
+    }
+    #network {
+      width: 100%;
+      height: 95vh;
+      border: 1px solid gray;
+    }
+    #infoBox {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="left">
+    <div id="network"></div>
+  </div>
+
+  <div id="right">
+    <div id="infoBox">ノードをクリックすると詳細が表示されます。</div>
+  </div>
+
+  <script>
+    let nodeDataRaw = {}, edgeData = [];
+
+    function fetchCSV(url) {
+      return fetch(url)
+        .then(response => response.text())
+        .then(text => {
+          return new Promise(resolve => {
+            Papa.parse(text, {
+              header: true,
+              skipEmptyLines: true,
+              complete: results => resolve(results.data)
+            });
+          });
+        });
+    }
+
+    async function loadAndDraw() {
+      const nodeCSV = 'todo_node.csv';
+      const edgeCSV = 'todo_edge.csv';
+
+      const nodes = await fetchCSV(nodeCSV);
+      const edges = await fetchCSV(edgeCSV);
+
+      nodeDataRaw = {};
+      const visNodes = nodes.map(n => {
+        const id = n.id;
+        nodeDataRaw[id] = n;
+        return {
+          id: id,
+          label: id,
+          value: parseInt(n.weight)
+        };
+      });
+
+      edgeData = edges.map(e => ({
+        from: e.from,
+        to: e.to,
+        label: `重み: ${e.weight}`,
+        arrows: 'to',
+        value: parseInt(e.weight)
+      }));
+
+      drawGraph(visNodes);
+    }
+
+    function drawGraph(visNodes) {
+      const container = document.getElementById('network');
+      const data = {
+        nodes: new vis.DataSet(visNodes),
+        edges: new vis.DataSet(edgeData)
+      };
+
+      const options = {
+        nodes: {
+          shape: 'circle',
+          scaling: {
+            min: 10,
+            max: 100, // ← 最大サイズを広げる（調整可能）
+            label: {
+                enabled: true,
+                min: 8,
+                max: 24
+            }
+          },
+          font: { size: 16, color: '#000000' },
+          color: {
+            background: '#ffffff',
+            border: '#000000',
+            highlight: { background: '#28a745', border: '#1e7e34' }
+          }
+        },
+        edges: {
+          font: { align: 'top' },
+          scaling: { min: 1, max: 5 }
+        },
+        interaction: {
+          hover: true,
+          tooltipDelay: 200
+        }
+      };
+
+      const network = new vis.Network(container, data, options);
+
+      network.on("click", function (params) {
+        if (params.nodes.length > 0) {
+          const nodeId = params.nodes[0];
+          const info = nodeDataRaw[nodeId];
+
+          const outgoingEdges = edgeData.filter(e => e.from === nodeId);
+          const incomingEdges = edgeData.filter(e => e.to === nodeId);
+
+          const outgoingHTML = outgoingEdges.map(e => `<li>→ ${e.to}（重み: ${e.label.replace('重み: ', '')}）</li>`).join('');
+          const incomingHTML = incomingEdges.map(e => `<li>← ${e.from}（重み: ${e.label.replace('重み: ', '')}）</li>`).join('');
+
+
+          document.getElementById("infoBox").innerHTML = `
+            <strong>ID:</strong> ${info.id}<br>
+            <strong>重み:</strong> ${info.weight}<br>
+            <strong>国内観光者数:</strong> ${info.score}<br><br>
+            <strong>出るエッジ:</strong><ul>${outgoingHTML || '<li>なし</li>'}</ul>
+            <strong>入るエッジ:</strong><ul>${incomingHTML || '<li>なし</li>'}</ul>
+          `;
+        } else {
+          document.getElementById("infoBox").innerText = "ノードをクリックすると詳細が表示されます。";
+        }
+      });
+    }
+
+    // ページ読み込み時に実行
+    window.onload = loadAndDraw;
+  </script>
+</body>
+</html>
