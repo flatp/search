@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CSVからグラフ描画</title>
+  <title>都道府県ClickStream</title>
   <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <style>
@@ -69,17 +69,21 @@
         return {
           id: id,
           label: id,
-          value: parseInt(n.weight)
+          value: parseInt(n.weight),
+          x: Math.random() * 1000 - 1000, 
+          y: Math.random() * 1000 - 1000
         };
       });
 
-      edgeData = edges.map(e => ({
-        from: e.from,
-        to: e.to,
-        label: `重み: ${e.weight}`,
-        arrows: 'to',
-        value: parseInt(e.weight)
-      }));
+      edgeData = edges.map(e => {
+        return{
+          from: e.from,
+          to: e.to,
+          arrows: 'to',
+          label: e.weight,
+          value: parseInt(e.weight)
+        };
+      });
 
       drawGraph(visNodes);
     }
@@ -92,11 +96,12 @@
       };
 
       const options = {
+        physics: false,
         nodes: {
           shape: 'circle',
           scaling: {
             min: 10,
-            max: 100, // ← 最大サイズを広げる（調整可能）
+            max: 100, 
             label: {
                 enabled: true,
                 min: 8,
@@ -112,7 +117,16 @@
         },
         edges: {
           font: { align: 'top' },
-          scaling: { min: 1, max: 5 }
+          scaling: { min: 1, max: 5 },
+          color: {
+            color: 'rgba(0, 0, 200, 0.1)', 
+            highlight: 'rgba(0, 0, 0, 0.5)',     
+            hover: 'rgba(0, 0, 0, 0.5)',          
+            inherit: false           
+          },
+          smooth: {
+            type: 'dynamic'             
+          }
         },
         interaction: {
           hover: true,
@@ -130,8 +144,8 @@
           const outgoingEdges = edgeData.filter(e => e.from === nodeId);
           const incomingEdges = edgeData.filter(e => e.to === nodeId);
 
-          const outgoingHTML = outgoingEdges.map(e => `<li>→ ${e.to}（重み: ${e.label.replace('重み: ', '')}）</li>`).join('');
-          const incomingHTML = incomingEdges.map(e => `<li>← ${e.from}（重み: ${e.label.replace('重み: ', '')}）</li>`).join('');
+          const outgoingHTML = outgoingEdges.map(e => `<li>→ ${e.to}（重み: ${e.value}）</li>`).join('');
+          const incomingHTML = incomingEdges.map(e => `<li>← ${e.from}（重み: ${e.value}）</li>`).join('');
 
 
           document.getElementById("infoBox").innerHTML = `
@@ -147,7 +161,6 @@
       });
     }
 
-    // ページ読み込み時に実行
     window.onload = loadAndDraw;
   </script>
 </body>
