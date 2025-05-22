@@ -54,12 +54,12 @@
 | br_direct.csv         | 人気度  | ピアソンの相関係数       | 0.1842   | 4.8490e-09     |
 | br_direct.csv         | 知名度  | スピアマンの順位相関係数 | 0.1595   | 4.2521e-07     |
 | br_direct.csv         | 知名度  | ピアソンの相関係数       | 0.0283   | 3.7189e-01     |
-| browserank_true.csv   | 人気度  | スピアマンの順位相関係数 | 0.2300   | 2.0539e-13     |
-| browserank_true.csv   | 人気度  | ピアソンの相関係数       | 0.0159   | 6.1677e-01     |
-| browserank_true.csv   | 知名度  | スピアマンの順位相関係数 | 0.2386   | 2.4176e-14     |
-| browserank_true.csv   | 知名度  | ピアソンの相関係数       | 0.0562   | 7.6212e-02     |
-| browserank_true_r.csv | 人気度  | スピアマンの順位相関係数 | 0.3015   | 2.3564e-22     |
-| browserank_true_r.csv | 人気度  | ピアソンの相関係数       | 0.1260   | 6.7720e-05     |
-| browserank_true_r.csv | 知名度  | スピアマンの順位相関係数 | 0.3274   | 2.7423e-26     |
-| browserank_true_r.csv | 知名度  | ピアソンの相関係数       | 0.1359   | 1.7076e-05     |
+| browserank_true2.csv   | 人気度  | スピアマンの順位相関係数 | 0.4005   | 1.2522e-39     |
+| browserank_true2.csv   | 人気度  | ピアソンの相関係数       | 0.1602   | 3.7591e-07     |
+| browserank_true2.csv   | 知名度  | スピアマンの順位相関係数 | 0.2495   | 1.3924e-15     |
+| browserank_true2.csv   | 知名度  | ピアソンの相関係数       | 0.0512   | 1.0629e-01     |
+| browserank_true2_r.csv | 人気度  | スピアマンの順位相関係数 | 0.4595   | 4.0872e-53     |
+| browserank_true2_r.csv | 人気度  | ピアソンの相関係数       | 0.2186   | 3.1509e-12     |
+| browserank_true2_r.csv | 知名度  | スピアマンの順位相関係数 | 0.3159   | 1.7297e-24     |
+| browserank_true2_r.csv | 知名度  | ピアソンの相関係数       | 0.0766   | 1.5685e-02     |
 
