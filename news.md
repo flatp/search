@@ -1,3 +1,11 @@
+# ニュース分析
+
+- [三次元プロット(変化量)](https://flatp.github.io/search/3d_scatter.html)
+- [三次元プロット(絶対値)](https://flatp.github.io/search/3d_scatter.html)
+
+
+# バースト分析
+
 ![代替テキスト](newsana.png)
 
 ```
